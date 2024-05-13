@@ -28,7 +28,7 @@ class ProductRepositoryTest {
         // given
         Product p = Product.builder()
                 .name("구두")
-                .price(300000)
+                .price(30500000)
                 .category(FASHION)
                 .build();
         // when
