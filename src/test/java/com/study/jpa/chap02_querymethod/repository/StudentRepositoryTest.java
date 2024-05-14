@@ -1,10 +1,7 @@
 package com.study.jpa.chap02_querymethod.repository;
 
 import com.study.jpa.chap02_querymethod.entity.Student;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
@@ -13,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @Transactional
 @Rollback(false)
@@ -21,8 +19,8 @@ class StudentRepositoryTest {
     @Autowired
     StudentRepository studentRepository;
 
-//    @BeforeAll: 해당 테스트 클래스를 초기화 할 때 딱 한 번 수행되는 메서드
-//    @BeforeEach // 각각의 테스트 메서드 실행 직전에 수행되는 메서드.
+    // @BeforeAll: 해당 테스트 클래스를 초기화 할때 딱 한번 수행되는 메서드. (static 으로 선언해야함.)
+    // @BeforeEach // 각각의 테스트 메서드 실행 직전에 수행되는 메서드.
     void insertData() {
         Student s1 = Student.builder()
                 .name("춘식이")
@@ -51,18 +49,19 @@ class StudentRepositoryTest {
         // given
         String name = "춘식이";
         // when
-        List<Student> students = studentRepository.findByName(name);
+        List<Student> students = studentRepository.findByName(name); // 인터페이스에다가 만든거임
         // then
-        assertEquals(2, students.size());
+        assertEquals(1, students.size());
+
         System.out.println("students.get(0) = " + students.get(0));
     }
-
     @Test
     @DisplayName("testFindByCityAndMajor")
     void testFindByCityAndMajor() {
         // given
         String city = "부산시";
         String major = "수학교육과";
+
         // when
         List<Student> students = studentRepository.findByCityAndMajor(city, major);
         // then
@@ -73,18 +72,18 @@ class StudentRepositoryTest {
     }
 
     @Test
-    @DisplayName("수학이 들어간 과는 다 찾아와라")
+    @DisplayName("testFindByMajorContaining")
     void testFindByMajorContaining() {
         // given
-        String major = "수학";
+        String major = "수학과";
         // when
         List<Student> students = studentRepository.findByMajorContaining(major);
         // then
-        assertEquals(4, students.size());
+        assertEquals(2, students.size());
+
         System.out.println("\n\n\n");
         students.forEach(System.out::println);
         System.out.println("\n\n\n");
-
     }
 
     @Test
@@ -93,13 +92,39 @@ class StudentRepositoryTest {
         // given
         String name = "대길이";
         // when
-        List<Student> students = studentRepository.findByName(name);
+        List<Student> students = studentRepository.findNameWithSQL(name);
+
         // then
         assertEquals("한양도성", students.get(0).getCity());
+
         System.out.println("\n\n\n");
         students.forEach(System.out::println);
+    }
+
+    @Test
+    @DisplayName("testFindCityWithJPQL")
+    void testFindCityWithJPQL() {
+        // given
+        String city = "서울시";
+        // when
+        List<Student> list = studentRepository.getByCityWithJPQL(city);
+        // then
+        assertEquals("춘식이", list.get(0).getName());
+        System.out.println("\n\n\n");
+        list.forEach(System.out::println);
         System.out.println("\n\n\n");
 
     }
 
+
+
 }
+
+
+
+
+
+
+
+
+
