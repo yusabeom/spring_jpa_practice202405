@@ -20,7 +20,7 @@ public class HashTag {
 
     private String tagName; // 해시태그 이름
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE) // 참조부모 삭제시 자식도 같이 삭제!!!
     @JoinColumn(name = "post_no")
     private Post post;
 
